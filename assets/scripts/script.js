@@ -31,9 +31,38 @@ stones.forEach(item => {
     radius: 1000
   }).addTo(map);
 });
-// Helper function to generate a random coordinate
+var thanosMarker = L.circle([51.508, -0.11], {
+  color: 'purple',
+  fillColor: '#f03',
+  fillOpacity: 0.5,
+  radius: 5000
+}).addTo(map);
+var acceptNewPoseFlag = true;
+// Move Thanos marker randomly and linearly
+setInterval(() => {
+  console.log("New Pose");
+  const newPosition = getRandomCoordinate();
+  const duration = 10000; // Duration of movement in milliseconds
+  const startPosition = thanosMarker.getLatLng();
+  const step = 0.001; // Step size for linear movement
+  let t = 0;
+  if (acceptNewPoseFlag) {
+    acceptNewPoseFlag = false;
+    const moveInterval = setInterval(() => {
+      t += step;
+      if (t >= 1) {
+        clearInterval(moveInterval);
+        acceptNewPoseFlag = true;
+      }
+      const lat = (1 - t) * startPosition.lat + t * newPosition.lat;
+      const lng = (1 - t) * startPosition.lng + t * newPosition.lng;
+      const newPositionLatLng = new L.latLng(lat, lng);
+      thanosMarker.setLatLng(newPositionLatLng);
+    }, duration * step);
+  }
+}, 5000); // Interval between movements in milliseconds// Helper function to generate a random coordinate
 function getRandomCoordinate() {
   const lat = Math.random() * 180 - 90;
   const lng = Math.random() * 360 - 180;
-  return new google.maps.LatLng(lat, lng);
+  return new L.latLng(lat, lng);
 }
