@@ -46,7 +46,7 @@ function initMap() {
   // Move Thanos marker randomly and linearly
   setInterval(() => {
     const newPosition = getRandomCoordinate();
-    const duration = 2000; // Duration of movement in milliseconds
+    const duration = 5000; // Duration of movement in milliseconds
 
     const startPosition = thanosMarker.getPosition();
     const step = 0.01; // Step size for linear movement
