@@ -40,12 +40,16 @@ stones.forEach(item => {
 
   })
 });
-var thanosMarker = L.circle([51.508, -0.11], {
-  color: 'purple',
-  fillColor: '#f03',
-  fillOpacity: 0.5,
-  radius: 5000
-}).addTo(map);
+var greenIcon = L.icon({
+  iconUrl: 'assets/img/thanos.png',
+
+  iconSize: [40, 40], // size of the icon
+  shadowSize: [50, 64], // size of the shadow
+  iconAnchor: [40, 40], // point of the icon which will correspond to marker's location
+  shadowAnchor: [4, 62],  // the same for the shadow
+  popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+var thanosMarker = L.marker([51.5, -0.11], { icon: greenIcon }).addTo(map);
 var thanosPredictMarker = L.circle([51.508, -0.11], {
   color: 'black',
   fillColor: '#f03',
@@ -60,6 +64,13 @@ setInterval(() => {
   let t = 0;
   if (acceptNewPoseFlag) {
     const newPosition = getRandomCoordinate();
+    stones.forEach(item => {
+      var distance = calculateDistance(item.cordinate.lat, item.cordinate.lng, newPosition.lat, newPosition.lng);
+      if (distance < 150) {
+        alert(`Thanos is going for ${item.name} stone`)
+      }
+    }
+    );
     console.log("New Pose");
     thanosPredictMarker.setLatLng(newPosition);
     acceptNewPoseFlag = false;
@@ -93,3 +104,19 @@ map.on('click', function (e) {
   spyMsg = e.latlng
   recievedSpyMsgFlag = true;
 });
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const earthRadius = 6371; // Radius of the earth in kilometers
+  const dLat = toRadians(lat2 - lat1);
+  const dLon = toRadians(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = earthRadius * c; // Distance in kilometers
+  return distance;
+}
+
+function toRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
