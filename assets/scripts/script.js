@@ -1,20 +1,28 @@
 // init template
+const mindstone = document.getElementById("mind-stone");
+const realitystone = document.getElementById("reality-stone");
+const soulstone = document.getElementById("soul-stone");
+const spacestone = document.getElementById("space-stone");
+const powerstone = document.getElementById("power-stone");
+const timestone = document.getElementById("time-stone")
 class StoneData {
-  constructor(color, name, lat, lon) {
+  constructor(color, name, lat, lon, element) {
     this.color = color;
     this.name = name;
     this.cordinate = { lat: lat, lng: lon };
+    this.element = element
   }
 }
-const stones = [new StoneData("yellow", "mind", 25.363, 131.044),
-new StoneData("red", "reality", -25.363, 131.044),
-new StoneData("green", "soul", -21.363, 11.044),
-new StoneData("blue", "space", -23.63, 211.044),
-new StoneData("purple", "power", -12.363, 11.044),
-new StoneData("orange", "time", -2.363, 131)]
+const stones = [new StoneData("yellow", "mind", 25.363, 131.044, mindstone),
+new StoneData("red", "reality", -25.363, 131.044, realitystone),
+new StoneData("orange", "soul", -21.363, 11.044, soulstone),
+new StoneData("blue", "space", -23.63, 211.044, spacestone),
+new StoneData("purple", "power", -12.363, 11.044, powerstone),
+new StoneData("green", "time", -2.363, 131, timestone)]
 var acceptNewPoseFlag = true;
 var recievedSpyMsgFlag = false;
 var spyMsg;
+var stoneIndex = 0;
 var map = L.map('map').setView([51.505, -0.09], 13);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 8,
@@ -27,6 +35,10 @@ stones.forEach(item => {
     fillOpacity: 0.5,
     radius: 1000
   }).addTo(map);
+  item.element.addEventListener("click", function () {
+    map.flyTo([item.cordinate.lat, item.cordinate.lng], 8);
+
+  })
 });
 var thanosMarker = L.circle([51.508, -0.11], {
   color: 'purple',
@@ -63,7 +75,8 @@ setInterval(() => {
       thanosMarker.setLatLng(newPositionLatLng);
     }, duration * step);
   }
-}, 5000); // Interval between movements in milliseconds// Helper function to generate a random coordinate
+}, 5000); // Interval between movements in milliseconds
+// Helper function to generate a random coordinate
 function getRandomCoordinate() {
   if (recievedSpyMsgFlag) {
     console.log("Spy msg sent");
