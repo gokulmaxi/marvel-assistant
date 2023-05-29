@@ -66,8 +66,10 @@ setInterval(() => {
     const newPosition = getRandomCoordinate();
     stones.forEach(item => {
       var distance = calculateDistance(item.cordinate.lat, item.cordinate.lng, newPosition.lat, newPosition.lng);
-      if (distance < 150) {
-        alert(`Thanos is going for ${item.name} stone`)
+      console.log(`${item.name} stone - ${distance}`)
+      if (distance < 500) {
+        console.log("warning")
+        dangerClick(item.name)
       }
     }
     );
@@ -119,4 +121,41 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 function toRadians(degrees) {
   return degrees * (Math.PI / 180);
+}
+
+var dangerClick = function (stoneName) {
+  $.notify({
+    // options
+    title: '<strong>Danger</strong>',
+    message: `< br > Thanos is nearing ${stoneName} stone`,
+    icon: 'glyphicon glyphicon-remove-sign',
+  }, {
+    // settings
+    element: 'body',
+    position: null,
+    type: "danger",
+    allow_dismiss: true,
+    newest_on_top: false,
+    showProgressbar: false,
+    placement: {
+      from: "top",
+      align: "right"
+    },
+    offset: 20,
+    spacing: 10,
+    z_index: 1031,
+    delay: 3300,
+    timer: 1000,
+    url_target: '_blank',
+    mouse_over: null,
+    animate: {
+      enter: 'animated flipInY',
+      exit: 'animated flipOutX'
+    },
+    onShow: null,
+    onShown: null,
+    onClose: null,
+    onClosed: null,
+    icon_type: 'class',
+  });
 }
